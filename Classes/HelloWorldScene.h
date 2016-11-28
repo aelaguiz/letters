@@ -30,6 +30,7 @@ private:
 	void createNewLabel(const std::string &keyStr);
 
 	std::map<cocos2d::EventKeyboard::KeyCode, std::chrono::high_resolution_clock::time_point> keyMap;
+	std::vector<cocos2d::Label *> labelList;
 };
 
 #endif // __HELLOWORLD_SCENE_H__

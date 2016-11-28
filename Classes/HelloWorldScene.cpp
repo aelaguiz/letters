@@ -109,7 +109,36 @@ void HelloWorld::onKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::
 }
 
 void HelloWorld::checkControlKeys(cocos2d::EventKeyboard::KeyCode keyCode) {
+	if (keyCode == EventKeyboard::KeyCode::KEY_LEFT_ARROW ||
+		keyCode == EventKeyboard::KeyCode::KEY_RIGHT_ARROW ||
+		keyCode == EventKeyboard::KeyCode::KEY_UP_ARROW ||
+		keyCode == EventKeyboard::KeyCode::KEY_DOWN_ARROW) {
+		auto physicsWorld = this->getScene()->getPhysicsWorld();
+		auto gravity = physicsWorld->getGravity();
 
+		if (keyCode == EventKeyboard::KeyCode::KEY_LEFT_ARROW) {
+			physicsWorld->setGravity(Vec2(-98.f, 0));
+		}
+		else if (keyCode == EventKeyboard::KeyCode::KEY_RIGHT_ARROW) {
+			physicsWorld->setGravity(Vec2(98.f, 0));
+		}
+		else if (keyCode == EventKeyboard::KeyCode::KEY_UP_ARROW) {
+			physicsWorld->setGravity(Vec2(0, 98.f));
+		}
+		else if (keyCode == EventKeyboard::KeyCode::KEY_DOWN_ARROW) {
+			physicsWorld->setGravity(Vec2(0, -98.f));
+		}
+
+		gravity = physicsWorld->getGravity();
+		CCLOG("Gravity %f %f", gravity.x, gravity.y);
+	}
+	else if (keyCode == EventKeyboard::KeyCode::KEY_SPACE) {
+		for (std::vector<cocos2d::Label *>::iterator it = labelList.begin(); it != labelList.end(); it++) {
+			this->removeChild(*it);
+		}
+
+		labelList.clear();
+	}
 }
 
 void HelloWorld::createNewLabel(const std::string &keyStr) {
@@ -118,6 +147,11 @@ void HelloWorld::createNewLabel(const std::string &keyStr) {
 
 	auto label = Label::createWithTTF(keyStr, "fonts/Marker Felt.ttf", 24);
 
+	auto r = rand() % 255;
+	auto g = rand() % 255;
+	auto b = rand() % 255;
+	label->setColor(Color3B(r, g, b));
+
 	// position the label on the center of the screen
 	label->setPosition(Vec2(origin.x + visibleSize.width / 2, origin.y + visibleSize.height - label->getContentSize().height));
 
@@ -125,6 +159,7 @@ void HelloWorld::createNewLabel(const std::string &keyStr) {
 
 	// add the label as a child to this layer
 	this->addChild(label, 1);
+	labelList.push_back(label);
 
 	label->setPhysicsBody(physicsBody);
 }
