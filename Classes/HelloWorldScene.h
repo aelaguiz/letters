@@ -1,0 +1,35 @@
+#ifndef __HELLOWORLD_SCENE_H__
+#define __HELLOWORLD_SCENE_H__
+
+#include "cocos2d.h"
+
+class HelloWorld : public cocos2d::LayerColor
+{
+public:
+    static cocos2d::Scene* createScene();
+
+    virtual bool init();
+    
+	void onKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event);
+	void onKeyReleased(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event);
+    
+    // implement the "static create()" method manually
+    CREATE_FUNC(HelloWorld);
+
+private:
+	void initListeners();
+	void initPhysics();
+
+	bool isKeyPressed(cocos2d::EventKeyboard::KeyCode);
+	double keyPressedDuration(cocos2d::EventKeyboard::KeyCode);
+
+	const std::string getKeyCodeAsString(cocos2d::EventKeyboard::KeyCode keyCode);
+	const std::string _getKeyCodeAsString(cocos2d::EventKeyboard::KeyCode keyCode);
+
+	void checkControlKeys(cocos2d::EventKeyboard::KeyCode keyCode);
+	void createNewLabel(const std::string &keyStr);
+
+	std::map<cocos2d::EventKeyboard::KeyCode, std::chrono::high_resolution_clock::time_point> keyMap;
+};
+
+#endif // __HELLOWORLD_SCENE_H__
