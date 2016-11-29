@@ -207,10 +207,11 @@ cocos2d::Label * HelloWorld::createNewLabel(const std::string &keyStr) {
 
 	auto label = Label::createWithTTF(keyStr, "fonts/Marker Felt.ttf", 24);
 
-	auto r = rand() % 255;
-	auto g = rand() % 255;
-	auto b = rand() % 255;
-	label->setColor(Color3B(r, g, b));
+	Color3B palette[] = { 
+		Color3B(0xFF, 0xFF, 0x30), Color3B(0xFB, 0x8D, 0x2D), Color3B(0xF6, 0x2A, 0x37), Color3B(0xF1, 0x27, 0x9F), Color3B(0xD2, 0x25, 0xEB), Color3B(0x65, 0x23, 0xE5),
+		Color3B(0x22, 0x46, 0xDF), Color3B(0x24, 0xA4, 0xD5), Color3B(0x28, 0xC9, 0xA0), Color3B(0x2C, 0xBE, 0x4B)};
+	int color = rand() % 10;
+	label->setColor(palette[color]);
 
 	// position the label on the center of the screen
 	label->setPosition(Vec2(origin.x + visibleSize.width / 2, origin.y + visibleSize.height - label->getContentSize().height));
@@ -229,77 +230,79 @@ cocos2d::Label * HelloWorld::createNewLabel(const std::string &keyStr) {
 const std::string HelloWorld::_getKeyCodeAsString(cocos2d::EventKeyboard::KeyCode keyCode) {
 	switch (keyCode) {
 	case EventKeyboard::KeyCode::KEY_A:
-		return "A";
+		return "amir";
 	case EventKeyboard::KeyCode::KEY_B:
-		return "B";
+		return "book";
 	case EventKeyboard::KeyCode::KEY_C:
-		return "C";
+		return "color";
 	case EventKeyboard::KeyCode::KEY_D:
-		return "D";
+		return "daddy";
 	case EventKeyboard::KeyCode::KEY_E:
-		return "E";
+		return "yes";
 	case EventKeyboard::KeyCode::KEY_F:
-		return "F";
+		return "hug";
 	case EventKeyboard::KeyCode::KEY_G:
-		return "G";
+		return "giraffe";
 	case EventKeyboard::KeyCode::KEY_H:
-		return "H";
+		return "home";
 	case EventKeyboard::KeyCode::KEY_I:
-		return "I";
+		return "lila";
 	case EventKeyboard::KeyCode::KEY_J:
-		return "J";
+		return "puppy";
 	case EventKeyboard::KeyCode::KEY_K:
-		return "K";
+		return "couch";
 	case EventKeyboard::KeyCode::KEY_L:
-		return "L";
+		return "logan";
 	case EventKeyboard::KeyCode::KEY_M:
-		return "M";
+		return "mommy";
 	case EventKeyboard::KeyCode::KEY_N:
-		return "N";
+		return "night night";
 	case EventKeyboard::KeyCode::KEY_O:
-		return "O";
+		return "outside";
 	case EventKeyboard::KeyCode::KEY_P:
-		return "P";
+		return "please";
 	case EventKeyboard::KeyCode::KEY_Q:
-		return "Q";
+		return "potty";
 	case EventKeyboard::KeyCode::KEY_R:
-		return "R";
+		return "poo poo";
 	case EventKeyboard::KeyCode::KEY_S:
-		return "S";
+		return "pee pee";
 	case EventKeyboard::KeyCode::KEY_T:
-		return "T";
+		return "thank you";
 	case EventKeyboard::KeyCode::KEY_U:
-		return "U";
+		return "swing";
 	case EventKeyboard::KeyCode::KEY_V:
-		return "V";
+		return "play";
 	case EventKeyboard::KeyCode::KEY_W:
-		return "W";
+		return "we";
 	case EventKeyboard::KeyCode::KEY_X:
-		return "X";
+		return "share";
 	case EventKeyboard::KeyCode::KEY_Y:
-		return "Y";
+		return "friends";
 	case EventKeyboard::KeyCode::KEY_Z:
-		return "Z";
+		return "nana";
 	case EventKeyboard::KeyCode::KEY_0:
-		return "0";
+		return "zero";
 	case EventKeyboard::KeyCode::KEY_1:
-		return "1";
+		return "one";
 	case EventKeyboard::KeyCode::KEY_2:
-		return "2";
+		return "two";
 	case EventKeyboard::KeyCode::KEY_3:
-		return "3";
+		return "three";
 	case EventKeyboard::KeyCode::KEY_4:
-		return "4";
+		return "four";
 	case EventKeyboard::KeyCode::KEY_5:
-		return "5";
+		return "five";
 	case EventKeyboard::KeyCode::KEY_6:
-		return "6";
+		return "six";
 	case EventKeyboard::KeyCode::KEY_7:
-		return "7";
+		return "seven";
 	case EventKeyboard::KeyCode::KEY_8:
-		return "8";
+		return "eight";
 	case EventKeyboard::KeyCode::KEY_9:
-		return "9";
+		return "nine";
+	case EventKeyboard::KeyCode::KEY_SPACE:
+		return "love";
 	default:
 		return "";
 	}
