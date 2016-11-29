@@ -32,6 +32,13 @@ bool HelloWorld::init()
 	auto visibleSize = Director::getInstance()->getVisibleSize();
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
+	auto texture = Director::getInstance()->getTextureCache()->addImage("Sprites/sfx/explosion.png");
+
+	auto sprite = Sprite::create();
+	sprite->initWithTexture(texture);
+	this->addChild(sprite);
+	sprite->setPosition(ccp(100, 100));
+
 	initListeners();
 
 	initPhysics();
@@ -101,7 +108,8 @@ void HelloWorld::onKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::
 	std::string keyStr = getKeyCodeAsString(keyCode);
 
 	if (!keyStr.empty()) {
-		createNewLabel(keyStr);
+		auto label = createNewLabel(keyStr);
+		createNodeParticles(label);
 	}
 	else {
 		checkControlKeys(keyCode);
@@ -141,7 +149,59 @@ void HelloWorld::checkControlKeys(cocos2d::EventKeyboard::KeyCode keyCode) {
 	}
 }
 
-void HelloWorld::createNewLabel(const std::string &keyStr) {
+void HelloWorld::createNodeParticles(cocos2d::Node *node) {
+
+	auto emitter = ParticleExplosion::createWithTotalParticles(500);
+
+	//auto texture = Director::getInstance()->getTextureCache()->getTextureForKey("Sprites/sfx/explosion.png");
+
+	//emitter->setTexture(texture);
+	emitter->setDuration(0.25);
+	emitter->setGravity(Vec2(0, 98.f));
+	emitter->setEmitterMode(ParticleSystem::Mode::GRAVITY);
+
+	emitter->setSpeed(320);
+	emitter->setSpeedVar(20);
+
+	//emitter->setRadialAccel(-120);
+	//emitter->setRadialAccelVar(0);
+
+	emitter->setTangentialAccel(30);
+	emitter->setTangentialAccelVar(0);
+
+	emitter->setAngle(270);
+	emitter->setAngleVar(90);
+
+	//emitter->setPosition(Vec2(160, 240));
+	//emitter->setPosVar(Vec2(0, 0));
+
+	//emitter->setSourcePosition(Vec2(160, 240));
+
+	emitter->setLife(4);
+	emitter->setLifeVar(1);
+
+	emitter->setStartSpin(30);
+	emitter->setStartSpinVar(0);
+	emitter->setEndSpin(60);
+	emitter->setEndSpinVar(0);
+
+	emitter->setStartSize(3);
+	emitter->setStartSizeVar(2);
+	emitter->setEndSize(10);
+	emitter->setEndSizeVar(4);
+	emitter->setEmissionRate(emitter->getTotalParticles() / emitter->getLife());
+
+	//emitter->setBlendAdditive(true);
+
+	this->addChild(emitter);
+
+	auto visibleSize = Director::getInstance()->getVisibleSize();
+	Vec2 origin = Director::getInstance()->getVisibleOrigin();
+
+	emitter->setPosition(Vec2(origin.x + visibleSize.width / 2, origin.y + visibleSize.height - node->getContentSize().height));
+}
+
+cocos2d::Label * HelloWorld::createNewLabel(const std::string &keyStr) {
 	auto visibleSize = Director::getInstance()->getVisibleSize();
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
@@ -162,6 +222,8 @@ void HelloWorld::createNewLabel(const std::string &keyStr) {
 	labelList.push_back(label);
 
 	label->setPhysicsBody(physicsBody);
+
+	return label;
 }
 
 const std::string HelloWorld::_getKeyCodeAsString(cocos2d::EventKeyboard::KeyCode keyCode) {

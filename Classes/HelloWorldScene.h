@@ -27,7 +27,8 @@ private:
 	const std::string _getKeyCodeAsString(cocos2d::EventKeyboard::KeyCode keyCode);
 
 	void checkControlKeys(cocos2d::EventKeyboard::KeyCode keyCode);
-	void createNewLabel(const std::string &keyStr);
+	cocos2d::Label * createNewLabel(const std::string &keyStr);
+	void createNodeParticles(cocos2d::Node *node);
 
 	std::map<cocos2d::EventKeyboard::KeyCode, std::chrono::high_resolution_clock::time_point> keyMap;
 	std::vector<cocos2d::Label *> labelList;
