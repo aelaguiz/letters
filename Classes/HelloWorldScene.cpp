@@ -24,7 +24,7 @@ bool HelloWorld::init()
 {
     //////////////////////////////
     // 1. super init first
-    if ( !LayerColor::initWithColor(Color4B(0, 0, 0, 255)))
+    if ( !LayerColor::initWithColor(Color4B(255, 255, 255, 255)))
     {
         return false;
     }
@@ -34,10 +34,6 @@ bool HelloWorld::init()
 
 	auto texture = Director::getInstance()->getTextureCache()->addImage("Sprites/sfx/explosion.png");
 
-	auto sprite = Sprite::create();
-	sprite->initWithTexture(texture);
-	this->addChild(sprite);
-	sprite->setPosition(ccp(100, 100));
 
 	initListeners();
 
@@ -151,14 +147,14 @@ void HelloWorld::checkControlKeys(cocos2d::EventKeyboard::KeyCode keyCode) {
 
 void HelloWorld::createNodeParticles(cocos2d::Node *node) {
 
-	auto emitter = ParticleExplosion::createWithTotalParticles(500);
+	auto emitter = ParticleFireworks::createWithTotalParticles(500);
 
 	//auto texture = Director::getInstance()->getTextureCache()->getTextureForKey("Sprites/sfx/explosion.png");
 
 	//emitter->setTexture(texture);
 	emitter->setDuration(0.25);
-	emitter->setGravity(Vec2(0, 98.f));
-	emitter->setEmitterMode(ParticleSystem::Mode::GRAVITY);
+	//emitter->setGravity(Vec2(0, 98.f));
+	//emitter->setEmitterMode(ParticleSystem::Mode::GRAVITY);
 
 	emitter->setSpeed(320);
 	emitter->setSpeedVar(20);
@@ -177,8 +173,8 @@ void HelloWorld::createNodeParticles(cocos2d::Node *node) {
 
 	//emitter->setSourcePosition(Vec2(160, 240));
 
-	emitter->setLife(4);
-	emitter->setLifeVar(1);
+	emitter->setLife(0.5);
+	emitter->setLifeVar(0.25);
 
 	emitter->setStartSpin(30);
 	emitter->setStartSpinVar(0);
@@ -207,11 +203,17 @@ cocos2d::Label * HelloWorld::createNewLabel(const std::string &keyStr) {
 
 	auto label = Label::createWithTTF(keyStr, "fonts/Marker Felt.ttf", 24);
 
-	Color3B palette[] = { 
-		Color3B(0xFF, 0xFF, 0x30), Color3B(0xFB, 0x8D, 0x2D), Color3B(0xF6, 0x2A, 0x37), Color3B(0xF1, 0x27, 0x9F), Color3B(0xD2, 0x25, 0xEB), Color3B(0x65, 0x23, 0xE5),
-		Color3B(0x22, 0x46, 0xDF), Color3B(0x24, 0xA4, 0xD5), Color3B(0x28, 0xC9, 0xA0), Color3B(0x2C, 0xBE, 0x4B)};
+	Color4B palette[] = { 
+		Color4B(0xFF, 0xFF, 0x30, 0xFF), Color4B(0xFB, 0x8D, 0x2D, 0xFF), Color4B(0xF6, 0x2A, 0x37, 0xFF), Color4B(0xF1, 0x27, 0x9F, 0xFF), 
+		Color4B(0xD2, 0x25, 0xEB, 0xFF), Color4B(0x65, 0x23, 0xE5, 0xFF),
+		Color4B(0x22, 0x46, 0xDF, 0xFF), Color4B(0x24, 0xA4, 0xD5, 0xFF), Color4B(0x28, 0xC9, 0xA0, 0xFF), Color4B(0x2C, 0xBE, 0x4B, 0xFF)};
 	int color = rand() % 10;
-	label->setColor(palette[color]);
+	//int color = 0;
+	label->setColor(Color3B(palette[color]));
+	//label->setTextColor(palette[color]);
+	label->enableOutline(Color4B(0, 0, 0, 255), 2);
+	//label->enableGlow(Color4B(255, 0, 0, 255));
+	label->enableShadow(Color4B(0, 0, 0, 128), Size(2, 2), 25);
 
 	// position the label on the center of the screen
 	label->setPosition(Vec2(origin.x + visibleSize.width / 2, origin.y + visibleSize.height - label->getContentSize().height));
@@ -223,6 +225,13 @@ cocos2d::Label * HelloWorld::createNewLabel(const std::string &keyStr) {
 	labelList.push_back(label);
 
 	label->setPhysicsBody(physicsBody);
+
+	auto fadeOut = Sequence::create(
+		FadeOut::create(4.0f),
+		RemoveSelf::create(true),
+		nullptr
+	);
+	label->runAction(fadeOut);
 
 	return label;
 }
