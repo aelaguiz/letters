@@ -12,6 +12,8 @@ public:
     
 	void onKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event);
 	void onKeyReleased(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event);
+	bool onContactBegin(const cocos2d::PhysicsContact &contact);
+	bool onPostContactSolve(cocos2d::PhysicsContact &contact, const cocos2d::PhysicsContactPostSolve &solve);
     
     // implement the "static create()" method manually
     CREATE_FUNC(HelloWorld);

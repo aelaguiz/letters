@@ -35,9 +35,8 @@ bool HelloWorld::init()
 	auto texture = Director::getInstance()->getTextureCache()->addImage("Sprites/sfx/explosion.png");
 
 
-	initListeners();
-
 	initPhysics();
+	initListeners();
 
     return true;
 }
@@ -48,6 +47,12 @@ void HelloWorld::initListeners() {
 	eventListener->onKeyReleased = CC_CALLBACK_2(HelloWorld::onKeyReleased, this);
 
 	Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(eventListener, this);
+
+	auto contactListener = EventListenerPhysicsContact::create();
+	contactListener->onContactBegin = CC_CALLBACK_1(HelloWorld::onContactBegin, this);
+	contactListener->onContactPostSolve = CC_CALLBACK_2(HelloWorld::onPostContactSolve, this);
+
+	Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(contactListener, this);
 }
 
 void HelloWorld::initPhysics() {
@@ -59,9 +64,68 @@ void HelloWorld::initPhysics() {
 	auto edgeNode = Node::create();
 	edgeNode->setPosition(visibleSize.width / 2 + origin.x, visibleSize.height / 2 + origin.y);
 	edgeNode->setPhysicsBody(edgeBody);
-
 	this->addChild(edgeNode);
+}
+
+bool HelloWorld::onPostContactSolve(PhysicsContact &contact, const cocos2d::PhysicsContactPostSolve &solve) {
+
+
+	//v1 = dot product velocity 1 and normal collision vector.
+	//v2 = dot product velocity 2 and normal collision vector.
+	//Impulse = m1v1 - m2v2
+	/*CCLOG("Post solve");
+
+	auto bodyA = contact.getShapeA()->getBody();
+	auto bodyB = contact.getShapeB()->getBody();
+
+	auto velocityA = bodyA->getVelocity();
+	CCLOG("Post solve Object A Velocity %f %f", velocityA.x, velocityA.y);
+
+	auto velocityB = bodyB->getVelocity();
+	CCLOG("Post solveObject B Velocity %f %f", velocityB.x, velocityB.y);*/
+
+	return true;
+}
+
+bool HelloWorld::onContactBegin(const PhysicsContact &contact)
+
+{
+	//auto veloc
+	//auto audio = CocosDenshion::SimpleAudioEngine::getInstance();
+
+	// play a sound effect, just once.
+	//audio->playEffect("sounds/sfx/boing.wav", false, 1.0f, 1.0f, 1.0f);
+
+	auto data = contact.getContactData();
+	auto normal = data->normal;
+
+	//CCLOG("Colision detected normal %f %f", data->normal.x, data->normal.y);
+	auto bodyA = contact.getShapeA()->getBody();
+	auto bodyB = contact.getShapeB()->getBody();
+
+	auto ObjA = (Sprite*)contact.getShapeA()->getBody()->getNode();
+	auto ObjB = (Sprite*)contact.getShapeB()->getBody()->getNode();
+
+	auto colorA = ObjA->getColor();
+	auto velocityA = bodyA->getVelocity();
+	//CCLOG("Object A Velocity %f %f", velocityA.x, velocityA.y);
+
+	auto colorB = ObjB->getColor();
+	auto velocityB = bodyB->getVelocity();
 	
+	//CCLOG("Object B Velocity %f %f", velocityB.x, velocityB.y);
+	
+	//v1 = dot product velocity 1 and normal collision vector.
+	//v2 = dot product velocity 2 and normal collision vector.
+	//Impulse = m1v1 - m2v2
+
+	auto v1 = velocityA.x * normal.x + velocityA.y * normal.y;
+	auto v2 = velocityB.x * normal.x + velocityB.y * normal.y;
+	auto impulse = bodyA->getMass() * v1 - bodyB->getMass() * v2;
+
+	CCLOG("Impulse %f", abs(impulse));
+
+	return true;
 }
 
 bool HelloWorld::isKeyPressed(EventKeyboard::KeyCode code) {
@@ -84,13 +148,13 @@ double HelloWorld::keyPressedDuration(EventKeyboard::KeyCode code) {
 }
 
 void HelloWorld::onKeyReleased(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event) {
-	CCLOG("Key released");
+	//CCLOG("Key released");
 
 	keyMap.erase(keyCode);
 }
 
 void HelloWorld::onKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event) {
-	CCLOG("Key Pressed");
+	//CCLOG("Key Pressed");
 
 	if (keyMap.find(keyCode) == keyMap.end()) {
 		keyMap[keyCode] = std::chrono::high_resolution_clock::now();
@@ -219,6 +283,7 @@ cocos2d::Label * HelloWorld::createNewLabel(const std::string &keyStr) {
 	label->setPosition(Vec2(origin.x + visibleSize.width / 2, origin.y + visibleSize.height - label->getContentSize().height));
 
 	auto physicsBody = PhysicsBody::createBox(Size(label->getContentSize().width, label->getContentSize().height), PhysicsMaterial(0.1f, 1.0f, 0.0f));
+	physicsBody->setContactTestBitmask(0x1);
 
 	// add the label as a child to this layer
 	this->addChild(label, 1);
